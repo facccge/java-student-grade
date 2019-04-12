@@ -2,6 +2,7 @@ package com.tw;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.regex.Pattern;
 
 /*
@@ -34,20 +35,20 @@ public class Library {
     }
 
     public void printAddStudentSuccess(String name) {
-        System.out.print("请输入要打印的学生的学号（格式： 学号, 学号,...），按回车提交：\n");
+        System.out.print("学生"+name+"的成绩被添加\n");
     }
 
     public void printAddStudentFail() {
-        System.out.print("请输入要打印的学生的学号（格式： 学号, 学号,...），按回车提交：\n");
+        System.out.print("请按正确的格式输入（格式：姓名, 学号, 学科: 成绩, ...）：\n");
     }
 
     public boolean checkAddStudentInputFormat(String input) {
-        String pattern = ".+,\\d+,(.+:\\d+,)*.+:\\d+";
-        boolean isMatch = Pattern.matches(pattern, input);
+        String pattern = "([\\u4e00-\\u9fa5]+,\\d+),([\\u4e00-\\u9fa5]+:\\d+,)*[\\u4e00-\\u9fa5]+:\\d+";
+        boolean isMatch = Pattern.matches(pattern, input.replace(" ",""));
         return isMatch;
     }
 
-    public boolean saveScore(String input) {
+    public String saveScore(String input) {
         String[] inputStrings = input.split(",");
         String name = inputStrings[0].trim();
         String number = inputStrings[1].trim();
@@ -69,13 +70,16 @@ public class Library {
         }
         Score score = new Score(name, number, math, chinese, english, programming);
         scoreList.add(score);
-        return true;
+        return name;
     }
 
-    public void addStudent(String input) {
+    public void addStudent() {
+        printAddStudentInterface();
+        Scanner scanner = new Scanner(System.in);
+        String input = scanner.nextLine();
         if (checkAddStudentInputFormat(input)) {
-            saveScore(input);
-            printAddStudentSuccess();
+            String name = saveScore(input);
+            printAddStudentSuccess(name);
         } else {
             printAddStudentFail();
         }

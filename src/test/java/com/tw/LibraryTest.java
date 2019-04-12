@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.LinkedList;
 
@@ -55,20 +56,20 @@ public class LibraryTest {
 
     @Test
     public void testCheckAddStudentFormatSuccess(){
-        boolean actual = library.checkAddStudentInputFormat("张三,000001,数学:98");
+        boolean actual = library.checkAddStudentInputFormat("张三, 000001, 数学: 99, 语文:98, 英语:97, 编程:96");
         boolean expected = true;
         assertEquals(expected,actual);
     }
 
     @Test
     public void testCheckAddStudentFormatFail(){
-        boolean actual = library.checkAddStudentInputFormat("张三, 000001, 数学: 98, 语文:99");
+        boolean actual = library.checkAddStudentInputFormat("张三, 000001, 物理.数学: 99, 语文:98");
         boolean expected = false;
         assertEquals(expected,actual);
     }
 
     @Test
-    public void testSaceStudentMethod(){
+    public void testSaveStudentMethod(){
         library.saveScore("张三, 000001, 数学: 99, 语文:98, 英语:97, 编程:96");
         Score score = library.getScoreList().get(0);
         assertEquals("张三",score.getName());
@@ -78,21 +79,6 @@ public class LibraryTest {
         assertEquals(97,score.getEnglishScore());
         assertEquals(96,score.getProgrammingScore());
     }
-
-    @Test
-    public void testAddStudentSuccess(){
-        library.addStudent("张三, 000001, 数学: 98, 语文:99");
-        String expectedString ="学生张三的成绩被添加\n";
-        assertEquals(expectedString,systemOut());
-    }
-
-    @Test
-    public void testAddStudentFail(){
-        library.addStudent("张三, 000001,物理，数学: 98");
-        String expectedString ="请按正确的格式输入（格式：姓名, 学号, 学科: 成绩, ...）：\n";
-        assertEquals(expectedString,systemOut());
-    }
-
 
 //    @Test
 //    public void testSomeLibraryMethod() {

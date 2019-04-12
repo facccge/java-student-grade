@@ -9,9 +9,9 @@ public class Main {
         while(flag){
             library.printMainInterface();
             Scanner scanner = new Scanner(System.in);
-            int choice = scanner.nextInt();
+            int choice = Integer.parseInt(scanner.nextLine());
             if(choice==1){
-
+                library.addStudent();
             }else if(choice==2){
 
             }else if(choice==3){

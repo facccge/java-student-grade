@@ -2,13 +2,13 @@ package com.tw;
 
 public class Score {
     private String name;
-    private int number;
+    private String number;
     private int mathScore;
     private int chineseScore;
     private int englishScore;
     private int programmingScore;
 
-    public Score(String name, int number, int mathScore, int chineseScore, int englishScore, int programmingScore) {
+    public Score(String name, String number, int mathScore, int chineseScore, int englishScore, int programmingScore) {
         this.name = name;
         this.number = number;
         this.mathScore = mathScore;
@@ -21,7 +21,7 @@ public class Score {
         return name;
     }
 
-    public int getNumber() {
+    public String getNumber() {
         return number;
     }
 

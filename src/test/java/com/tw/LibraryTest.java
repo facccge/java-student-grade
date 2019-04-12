@@ -68,6 +68,18 @@ public class LibraryTest {
     }
 
     @Test
+    public void testSaceStudentMethod(){
+        library.saveScore("张三, 000001, 数学: 99, 语文:98, 英语:97, 编程:96");
+        Score score = library.getScoreList().get(0);
+        assertEquals("张三",score.getName());
+        assertEquals("000001",score.getNumber());
+        assertEquals(99,score.getMathScore());
+        assertEquals(98,score.getChineseScore());
+        assertEquals(97,score.getEnglishScore());
+        assertEquals(96,score.getProgrammingScore());
+    }
+
+    @Test
     public void testAddStudentSuccess(){
         library.addStudent("张三, 000001, 数学: 98, 语文:99");
         String expectedString ="学生张三的成绩被添加\n";

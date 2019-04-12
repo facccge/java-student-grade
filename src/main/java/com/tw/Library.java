@@ -10,52 +10,73 @@ import java.util.regex.Pattern;
 public class Library {
     private List<Score> scoreList;
 
+    public List<Score> getScoreList() {
+        return scoreList;
+    }
+
     public Library() {
         this.scoreList = new ArrayList<>();
     }
 
-    public void printMainInterface(){
+    public void printMainInterface() {
         System.out.print("1. 添加学生\n" +
                 "2. 生成成绩单\n" +
                 "3. 退出\n" +
                 "请输入你的选择（1～3）：\n");
     }
 
-    public void printAddStudentInterface(){
+    public void printAddStudentInterface() {
         System.out.print("请输入学生信息（格式：姓名, 学号, 学科: 成绩, ...），按回车提交：\n");
     }
 
-    public void printGenerateTranscriptInterface(){
+    public void printGenerateTranscriptInterface() {
         System.out.print("请输入要打印的学生的学号（格式： 学号, 学号,...），按回车提交：\n");
     }
 
-    public void printAddStudentSuccess(){
+    public void printAddStudentSuccess(String name) {
         System.out.print("请输入要打印的学生的学号（格式： 学号, 学号,...），按回车提交：\n");
     }
 
-    public void printAddStudentFail(){
+    public void printAddStudentFail() {
         System.out.print("请输入要打印的学生的学号（格式： 学号, 学号,...），按回车提交：\n");
     }
 
-    public boolean checkAddStudentInputFormat(String input){
+    public boolean checkAddStudentInputFormat(String input) {
         String pattern = ".+,\\d+,(.+:\\d+,)*.+:\\d+";
         boolean isMatch = Pattern.matches(pattern, input);
         return isMatch;
     }
 
-    public boolean saveScore(String name,int number,int math,int chinese,int english,int programming){
-        Score score = new Score(name,number,math,chinese,english,programming);
+    public boolean saveScore(String input) {
+        String[] inputStrings = input.split(",");
+        String name = inputStrings[0].trim();
+        String number = inputStrings[1].trim();
+        int math = 0, chinese = 0, english = 0, programming = 0;
+        for (int i = 2; i < inputStrings.length; i++) {
+            String[] scoreStrings = inputStrings[i].split(":");
+            if (scoreStrings[0].trim().equals("数学")) {
+                math = Integer.parseInt(scoreStrings[1].trim());
+            }
+            if (scoreStrings[0].trim().equals("语文")) {
+                chinese = Integer.parseInt(scoreStrings[1].trim());
+            }
+            if (scoreStrings[0].trim().equals("英语")) {
+                english = Integer.parseInt(scoreStrings[1].trim());
+            }
+            if (scoreStrings[0].trim().equals("编程")) {
+                programming = Integer.parseInt(scoreStrings[1].trim());
+            }
+        }
+        Score score = new Score(name, number, math, chinese, english, programming);
         scoreList.add(score);
         return true;
     }
 
-    public void addStudent(String input){
-        if(checkAddStudentInputFormat(input)){
-            String[] inputStrings = input.split(",");
-            String name = inputStrings[0];
-            String number = inputStrings[1];
+    public void addStudent(String input) {
+        if (checkAddStudentInputFormat(input)) {
+            saveScore(input);
             printAddStudentSuccess();
-        }else{
+        } else {
             printAddStudentFail();
         }
     }

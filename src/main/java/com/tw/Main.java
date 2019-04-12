@@ -5,8 +5,9 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args){
         boolean flag = true;
+        Library library = new Library();
         while(flag){
-            Library.printMainInterface();
+            library.printMainInterface();
             Scanner scanner = new Scanner(System.in);
             int choice = scanner.nextInt();
             if(choice==1){

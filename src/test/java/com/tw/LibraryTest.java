@@ -15,6 +15,7 @@ import static org.mockito.Mockito.when;
 
 public class LibraryTest {
     private ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private Library library;
 
     private String systemOut() {
         return outContent.toString();
@@ -22,12 +23,12 @@ public class LibraryTest {
 
     @Before
     public void setup() {
+        library = new Library();
         System.setOut(new PrintStream(outContent));
     }
 
     @Test
     public void testPrintMainInterfaceMethod(){
-        Library library = new Library();
         library.printMainInterface();
         String expectedString ="1. 添加学生\n" +
                 "2. 生成成绩单\n" +
@@ -40,7 +41,6 @@ public class LibraryTest {
 
     @Test
     public void testPrintAddInterfaceMethod(){
-        Library library = new Library();
         library.printAddStudentInterface();
         String expectedString ="请输入学生信息（格式：姓名, 学号, 学科: 成绩, ...），按回车提交：\n";
         assertEquals(expectedString,systemOut());
@@ -48,9 +48,36 @@ public class LibraryTest {
 
     @Test
     public void testPrintGenerateTranscriptInterfaceMethod(){
-        Library library = new Library();
         library.printGenerateTranscriptInterface();
         String expectedString ="请输入要打印的学生的学号（格式： 学号, 学号,...），按回车提交：\n";
+        assertEquals(expectedString,systemOut());
+    }
+
+    @Test
+    public void testCheckAddStudentFormatSuccess(){
+        boolean actual = library.checkAddStudentInputFormat("张三,000001,数学:98");
+        boolean expected = true;
+        assertEquals(expected,actual);
+    }
+
+    @Test
+    public void testCheckAddStudentFormatFail(){
+        boolean actual = library.checkAddStudentInputFormat("张三, 000001, 数学: 98, 语文:99");
+        boolean expected = false;
+        assertEquals(expected,actual);
+    }
+
+    @Test
+    public void testAddStudentSuccess(){
+        library.addStudent("张三, 000001, 数学: 98, 语文:99");
+        String expectedString ="学生张三的成绩被添加\n";
+        assertEquals(expectedString,systemOut());
+    }
+
+    @Test
+    public void testAddStudentFail(){
+        library.addStudent("张三, 000001,物理，数学: 98");
+        String expectedString ="请按正确的格式输入（格式：姓名, 学号, 学科: 成绩, ...）：\n";
         assertEquals(expectedString,systemOut());
     }
 

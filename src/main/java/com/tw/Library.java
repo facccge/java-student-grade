@@ -1,8 +1,7 @@
 package com.tw;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.text.DecimalFormat;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /*
@@ -35,7 +34,7 @@ public class Library {
     }
 
     public void printAddStudentSuccess(String name) {
-        System.out.print("学生"+name+"的成绩被添加\n");
+        System.out.print("学生" + name + "的成绩被添加\n");
     }
 
     public void printAddStudentFail() {
@@ -44,7 +43,7 @@ public class Library {
 
     public boolean checkAddStudentInputFormat(String input) {
         String pattern = "([\\u4e00-\\u9fa5]+,\\d+),([\\u4e00-\\u9fa5]+:\\d+,)*[\\u4e00-\\u9fa5]+:\\d+";
-        boolean isMatch = Pattern.matches(pattern, input.replace(" ",""));
+        boolean isMatch = Pattern.matches(pattern, input.replace(" ", ""));
         return isMatch;
     }
 
@@ -83,5 +82,88 @@ public class Library {
         } else {
             printAddStudentFail();
         }
+    }
+
+    public boolean checkGenerateTranscriptInputFormat(String input) {
+        String pattern = "(\\d+,)*\\d+";
+        boolean isMatch = Pattern.matches(pattern, input.replace(" ", ""));
+        return isMatch;
+    }
+
+    public void generateTranscript() {
+        printGenerateTranscriptInterface();
+        Scanner scanner = new Scanner(System.in);
+        String input = scanner.nextLine();
+        if (checkGenerateTranscriptInputFormat(input)) {
+            generateTranscriptModel(input);
+        } else {
+            printAddStudentFail();
+        }
+    }
+
+    public void generateTranscriptModel(String input) {
+        String[] inputStrings = input.split(",");
+        List<Score> currentScoreList = new LinkedList<>();
+        List<Integer> totalScoreList = new LinkedList<>();
+        int count = 0;
+        int totalScore = 0;
+        double averageScore = 0.0;
+        double medianScore = 0.0;
+        for (String currentNumber : inputStrings) {
+            for (Score score : scoreList) {
+                if (currentNumber.equals(score.getNumber())) {
+                    int subTotalScore = score.getMathScore() + score.getChineseScore() + score.getEnglishScore() + score.getProgrammingScore();
+                    score.setTotalScore(subTotalScore);
+                    score.setAverageScore(subTotalScore/4.0);
+                    totalScoreList.add(subTotalScore);
+                    currentScoreList.add(score);
+                    totalScore += subTotalScore;
+                    count += 1;
+                }
+            }
+
+        }
+        averageScore = totalScore / count;
+        medianScore = getMedianScore(totalScoreList);
+
+        printGenerateTranscriptSuccess(currentScoreList, averageScore, medianScore);
+
+    }
+
+    public double getMedianScore(List<Integer> totalScoreList) {
+        int length = totalScoreList.size();
+        Integer[] totalScoreArray = totalScoreList.toArray(new Integer[length]);
+        Arrays.sort(totalScoreArray);
+        double medianScore = 0.0;
+        if (length % 2 == 0) {
+            medianScore = (totalScoreArray[length / 2] + totalScoreArray[length / 2 - 1]) / 2.0;
+        } else {
+            medianScore = totalScoreArray[length / 2];
+        }
+        return medianScore;
+    }
+
+    public void printGenerateTranscriptSuccess(List<Score> currentScoreList, double averageScore, double medianScore) {
+        DecimalFormat decimalFormat = new DecimalFormat("###################.###########");
+        String result = "成绩单\n" +
+                "姓名|数学|语文|英语|编程|平均分|总分\n" +
+                "========================\n";
+        for (Score score : currentScoreList) {
+            result += score.getName() + "|" +
+                    score.getMathScore() + "|" +
+                    score.getChineseScore() + "|" +
+                    score.getEnglishScore() + "|" +
+                    score.getProgrammingScore() + "|" +
+                    decimalFormat.format(score.getAverageScore()) + "|" +
+                    score.getTotalScore() + "\n";
+        }
+        result += "========================\n";
+        result += "全班总分平均数：" + decimalFormat.format(averageScore) + "\n";
+        result += "全班总分中位数：" + decimalFormat.format(medianScore) + "\n";
+        System.out.print(result);
+    }
+
+    public void printGenerateTranscriptFail() {
+        System.out.print("请按正确的格式输入要打印的学生的学号（格式： 学号, 学号,...），按回车提交：\n");
     }
 }

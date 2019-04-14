@@ -9,6 +9,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.LinkedList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
@@ -29,57 +30,142 @@ public class LibraryTest {
     }
 
     @Test
-    public void testPrintMainInterfaceMethod(){
+    public void testPrintMainInterfaceMethod() {
         library.printMainInterface();
-        String expectedString ="1. 添加学生\n" +
+        String expectedString = "1. 添加学生\n" +
                 "2. 生成成绩单\n" +
                 "3. 退出\n" +
                 "请输入你的选择（1～3）：\n";
-        assertEquals(expectedString,systemOut());
+        assertEquals(expectedString, systemOut());
 //        assertThat(systemOut()).isEqualTo(expectedString);
 //        assertThat(systemOut().endsWith("I am Tom. I know Jerry become Leader of Class 2.\n")).isTrue();
     }
 
     @Test
-    public void testPrintAddInterfaceMethod(){
+    public void testPrintAddInterfaceMethod() {
         library.printAddStudentInterface();
-        String expectedString ="请输入学生信息（格式：姓名, 学号, 学科: 成绩, ...），按回车提交：\n";
-        assertEquals(expectedString,systemOut());
+        String expectedString = "请输入学生信息（格式：姓名, 学号, 学科: 成绩, ...），按回车提交：\n";
+        assertEquals(expectedString, systemOut());
     }
 
     @Test
-    public void testPrintGenerateTranscriptInterfaceMethod(){
+    public void testPrintGenerateTranscriptInterfaceMethod() {
         library.printGenerateTranscriptInterface();
-        String expectedString ="请输入要打印的学生的学号（格式： 学号, 学号,...），按回车提交：\n";
-        assertEquals(expectedString,systemOut());
+        String expectedString = "请输入要打印的学生的学号（格式： 学号, 学号,...），按回车提交：\n";
+        assertEquals(expectedString, systemOut());
     }
 
     @Test
-    public void testCheckAddStudentFormatSuccess(){
+    public void testCheckAddStudentFormatSuccess() {
         boolean actual = library.checkAddStudentInputFormat("张三, 000001, 数学: 99, 语文:98, 英语:97, 编程:96");
         boolean expected = true;
-        assertEquals(expected,actual);
+        assertEquals(expected, actual);
     }
 
     @Test
-    public void testCheckAddStudentFormatFail(){
+    public void testCheckAddStudentFormatFail() {
         boolean actual = library.checkAddStudentInputFormat("张三, 000001, 物理.数学: 99, 语文:98");
         boolean expected = false;
-        assertEquals(expected,actual);
+        assertEquals(expected, actual);
     }
 
     @Test
-    public void testSaveStudentMethod(){
+    public void testSaveStudentMethod() {
         library.saveScore("张三, 000001, 数学: 99, 语文:98, 英语:97, 编程:96");
         Score score = library.getScoreList().get(0);
-        assertEquals("张三",score.getName());
-        assertEquals("000001",score.getNumber());
-        assertEquals(99,score.getMathScore());
-        assertEquals(98,score.getChineseScore());
-        assertEquals(97,score.getEnglishScore());
-        assertEquals(96,score.getProgrammingScore());
+        assertEquals("张三", score.getName());
+        assertEquals("000001", score.getNumber());
+        assertEquals(99, score.getMathScore());
+        assertEquals(98, score.getChineseScore());
+        assertEquals(97, score.getEnglishScore());
+        assertEquals(96, score.getProgrammingScore());
     }
 
+    @Test
+    public void testCheckGenerateTranscriptInputFormatSuccess() {
+        boolean actual = library.checkAddStudentInputFormat("张三, 000001, 数学: 99, 语文:98, 英语:97, 编程:96");
+        boolean expected = true;
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testCheckGenerateTranscriptInputFormatFail() {
+        boolean actual = library.checkAddStudentInputFormat("张三, 000001, 物理.数学: 99, 语文:98");
+        boolean expected = false;
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testGetMedianScoreWhenOdd() {
+//        List<Score> scoreList = new LinkedList<>();
+//        Score score1 = new Score("张三","000001",99, 98,97,96,97.5,390);
+//        Score score2 = new Score("李四","000002",95, 95,95,95,95,380);
+//        scoreList.add(score1);
+//        scoreList.add(score2);
+        List<Integer> list = new LinkedList<>();
+        list.add(90);
+        list.add(95);
+        list.add(100);
+        double actual = library.getMedianScore(list);
+        double expected = 95;
+        assertEquals(expected, actual, 0.0);
+    }
+
+    @Test
+    public void testGetMedianScoreWhenEven() {
+        List<Integer> list = new LinkedList<>();
+        list.add(90);
+        list.add(95);
+        list.add(96);
+        list.add(100);
+        double actual = library.getMedianScore(list);
+        double expected = 95.5;
+        assertEquals(expected, actual, 0.0);
+    }
+
+    @Test
+    public void testPrintGenerateTranscriptSuccess() {
+        List<Score> scoreList = new LinkedList<>();
+        Score score1 = new Score("张三", "000001", 99, 98, 97, 96, 97.5, 390);
+        Score score2 = new Score("李四", "000002", 95, 95, 95, 95, 95, 380);
+        scoreList.add(score1);
+        scoreList.add(score2);
+        double averageScore = 385;
+        double medianScore = 385;
+        library.printGenerateTranscriptSuccess(scoreList,averageScore,medianScore);
+        String expected = "成绩单\n" +
+                "姓名|数学|语文|英语|编程|平均分|总分\n" +
+                "========================\n" +
+                "张三|99|98|97|96|97.5|390\n" +
+                "李四|95|95|95|95|95|380\n" +
+                "========================\n" +
+                "全班总分平均数：385\n" +
+                "全班总分中位数：385\n";
+        assertEquals(expected, systemOut());
+    }
+
+    @Test
+    public void testPrintGenerateTranscriptFail() {
+        library.printGenerateTranscriptFail();
+        String expected = "请按正确的格式输入要打印的学生的学号（格式： 学号, 学号,...），按回车提交：\n";
+        assertEquals(expected, systemOut());
+    }
+
+    @Test
+    public void testGenerateTranscript() {
+        library.saveScore("张三, 000001, 数学: 99, 语文:98, 英语:97, 编程:96");
+        library.saveScore("李四, 000002, 数学: 95, 语文:95, 英语:95, 编程:95");
+        library.generateTranscriptModel("000001,000002");
+        String expected = "成绩单\n" +
+                "姓名|数学|语文|英语|编程|平均分|总分\n" +
+                "========================\n" +
+                "张三|99|98|97|96|97.5|390\n" +
+                "李四|95|95|95|95|95|380\n" +
+                "========================\n" +
+                "全班总分平均数：385\n" +
+                "全班总分中位数：385\n";
+        assertEquals(expected, systemOut());
+    }
 //    @Test
 //    public void testSomeLibraryMethod() {
 //        Library classUnderTest = new Library();

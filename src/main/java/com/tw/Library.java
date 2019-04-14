@@ -42,12 +42,12 @@ public class Library {
     }
 
     public boolean checkAddStudentInputFormat(String input) {
-        String pattern = "([\\u4e00-\\u9fa5]+,\\d+),([\\u4e00-\\u9fa5]+:\\d+,)*[\\u4e00-\\u9fa5]+:\\d+";
+        String pattern = "^[\\u4e00-\\u9fa5]+,\\d+,[\\u4e00-\\u9fa5]+:\\d+,[\\u4e00-\\u9fa5]+:\\d+,[\\u4e00-\\u9fa5]+:\\d+,[\\u4e00-\\u9fa5]+:\\d+";
         boolean isMatch = Pattern.matches(pattern, input.replace(" ", ""));
         return isMatch;
     }
 
-    public String saveScore(String input) {
+    public void addStudent(String input) {
         String[] inputStrings = input.split(",");
         String name = inputStrings[0].trim();
         String number = inputStrings[1].trim();
@@ -69,19 +69,7 @@ public class Library {
         }
         Score score = new Score(name, number, math, chinese, english, programming);
         scoreList.add(score);
-        return name;
-    }
-
-    public void addStudent() {
-        printAddStudentInterface();
-        Scanner scanner = new Scanner(System.in);
-        String input = scanner.nextLine();
-        if (checkAddStudentInputFormat(input)) {
-            String name = saveScore(input);
-            printAddStudentSuccess(name);
-        } else {
-            printAddStudentFail();
-        }
+        printAddStudentSuccess(name);
     }
 
     public boolean checkGenerateTranscriptInputFormat(String input) {
@@ -90,18 +78,7 @@ public class Library {
         return isMatch;
     }
 
-    public void generateTranscript() {
-        printGenerateTranscriptInterface();
-        Scanner scanner = new Scanner(System.in);
-        String input = scanner.nextLine();
-        if (checkGenerateTranscriptInputFormat(input)) {
-            generateTranscriptModel(input);
-        } else {
-            printAddStudentFail();
-        }
-    }
-
-    public void generateTranscriptModel(String input) {
+    public void generateTranscript(String input) {
         String[] inputStrings = input.split(",");
         List<Score> currentScoreList = new LinkedList<>();
         List<Integer> totalScoreList = new LinkedList<>();
@@ -127,7 +104,6 @@ public class Library {
         medianScore = getMedianScore(totalScoreList);
 
         printGenerateTranscriptSuccess(currentScoreList, averageScore, medianScore);
-
     }
 
     public double getMedianScore(List<Integer> totalScoreList) {
